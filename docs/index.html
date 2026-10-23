@@ -151,6 +151,20 @@ nav a.nav-git b{background:#fbbf24;color:#1c1300;border-radius:999px;padding:1px
 @keyframes ringg{70%{box-shadow:0 0 0 12px rgba(168,85,247,0)}100%{box-shadow:0 0 0 0 rgba(168,85,247,0)}}
 .card.git .ban.c{background:linear-gradient(135deg,#24292f,#57606a)}
 .gbox{display:flex;flex-wrap:wrap;gap:10px}
+
+/* Cartes robotique avec photo */
+.ban.ph{position:relative;padding:0;height:230px;display:block;background:#0b1b36}
+.ban.ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s}
+.card:hover .ban.ph img{transform:scale(1.06)}
+.ban.ph:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,18,38,.05) 35%,rgba(7,18,38,.82))}
+.card .ban.ph svg{width:1.1em;height:1.1em;flex:none;display:inline-block}
+.ban.ph .iot{position:absolute;left:14px;top:14px;z-index:2;display:inline-flex;gap:7px;align-items:center;background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff;font-weight:800;font-size:.85rem;letter-spacing:.05em;border-radius:999px;padding:5px 14px;box-shadow:0 0 18px rgba(34,211,238,.7)}
+.ban.ph .cap{position:absolute;left:16px;right:16px;bottom:12px;z-index:2;color:#fff;font-weight:700;font-size:1.05rem;text-shadow:0 2px 8px rgba(0,0,0,.7);display:flex;gap:8px;align-items:center}
+.ban.ph.m img{object-position:center 92%}
+.ban.ph.m .iot{background:linear-gradient(135deg,#f59e0b,#ea580c);box-shadow:0 0 18px rgba(245,158,11,.7)}
+.badge.en{background:linear-gradient(135deg,#f59e0b,#ea580c)}
+.card.rob{border-top:4px solid var(--b)}.card.rob.m{border-top-color:var(--am)}
+.lc.en li::marker{font-weight:700;color:var(--am)}
 </style>
 </head>
 <body>
@@ -277,7 +291,7 @@ nav a.nav-git b{background:#fbbf24;color:#1c1300;border-radius:999px;padding:1px
 
 <section id="robotique">
 <h2><svg class="i"><use href="#robot"/></svg>Robotique du club</h2>
-<p class="lead">Deux parcours en vidéo, du premier montage jusqu'au robot qui bouge. Suivez les leçons dans l'ordre.</p>
+<p class="lead">Deux formations en vidéo pour le club IoT : ESP32 en français (11 TP) et micro:bit V2 en anglais (5 activités). Suivez-les dans l'ordre.</p>
 <div class="cards" id="robot-liste"></div>
 </section>
 
@@ -325,20 +339,45 @@ const COURS = [
 /* Robotique du club : mettez ici les leçons de chaque playlist, dans l'ordre.
    Exemple de leçon : { titre:"Leçon 1 : faire clignoter une LED", lien:"https://www.youtube.com/watch?v=..." } */
 const ROBOTIQUE = [
-  { titre:"Robotique avec ESP32", icone:"chip", style:"",
-    desc:"Programmer la carte ESP32 pour piloter des capteurs, des moteurs et un robot connecté.",
-    playlist:"https://www.youtube.com/@kamelalmezni/playlists", lecons:[] },
-  { titre:"Robotique avec micro:bit", icone:"robot", style:" m",
-    desc:"Découvrir la programmation par blocs et par code avec la carte micro:bit.",
-    playlist:"https://www.youtube.com/@kamelalmezni/playlists", lecons:[] }
+  { titre:"Formation vidéo ESP32 : 11 TP pas à pas", icone:"chip", style:"", badges:["Formation vidéo","11 TP","ESP32"], sansNum:true,
+    photo:"img/club-esp32.jpg", alt:"Élèves du club IoT du Lycée Liberté Jendouba travaillant sur un projet ESP32", legende:"Les élèves du club en plein projet ESP32",
+    desc:"De la première LED au capteur de lumière : programmer la carte ESP32 pour piloter des composants et des capteurs, avec un montage à réaliser à chaque TP.",
+    playlist:"https://youtu.be/rjPqwR-Q3Gs?si=MfRs2wRsxwvtYA4u", bouton:"Voir la formation sur YouTube",
+    lecons:[
+      { titre:"TP 0 : Allumer une LED avec des piles (3:40)" },
+      { titre:"TP 1 : LED clignotante (4:19)" },
+      { titre:"TP 2 : LED avec résistance (2:40)" },
+      { titre:"TP 3 : Feux de circulation (11:56)" },
+      { titre:"TP 4 : Bouton poussoir (8:40)" },
+      { titre:"TP 5 : Buzzer" },
+      { titre:"TP 6 : LED RGB (6:48)" },
+      { titre:"TP 7 : Servo moteur (4:56)" },
+      { titre:"TP 8 : Capteur ultrason (3:43)" },
+      { titre:"TP 9 : Température et humidité (0:36)" },
+      { titre:"TP 10 : Capteur de lumière (2:51)" }
+    ] },
+  { titre:"Micro:bit V2 Basics : 5 activités (formation en anglais)", icone:"robot", style:" m", badges:["Formation vidéo","5 activités","English","micro:bit V2"],
+    photo:"img/club-microbit.jpg", alt:"Séance de robotique micro:bit avec les kits sur les tables devant les élèves", legende:"Séance micro:bit : kits sur les tables",
+    desc:"Learn the basics of the micro:bit V2 step by step: from turning on an LED to measuring distance with an ultrasonic sensor. Each video is a short, practical activity, taught in English.",
+    playlist:"https://youtu.be/dVGgOVXkY8I?si=OYGGv3Kq1jPkYYcQ", bouton:"Watch the playlist on YouTube", en:true,
+    lecons:[
+      { titre:"01 Turn On LED (4:19)" },
+      { titre:"02 RGB LED (3:15)" },
+      { titre:"03 Temperature (1:25)" },
+      { titre:"04 Servo Motor (2:36)" },
+      { titre:"05 Ultrasonic Sensor (2:28)" }
+    ] }
 ];
 const rl = document.getElementById("robot-liste");
 ROBOTIQUE.forEach(r => {
-  const el = document.createElement("article"); el.className = "card";
+  const el = document.createElement("article"); el.className = "card rob" + r.style;
   const lecons = r.lecons.length
-    ? `<ol class="lc">` + r.lecons.map(l => `<li>${l.lien ? `<a href="${l.lien}" target="_blank" rel="noopener">${l.titre}</a>` : l.titre}</li>`).join("") + `</ol>`
+    ? `<ol class="lc${r.en ? " en" : ""}"${r.sansNum ? ' style="list-style:none;padding-left:0"' : ""}>` + r.lecons.map(l => `<li>${l.lien ? `<a href="${l.lien}" target="_blank" rel="noopener">${l.titre}</a>` : l.titre}</li>`).join("") + `</ol>`
     : `<p class="vide">Les leçons de cette playlist seront listées ici.</p>`;
-  el.innerHTML = `<div class="ban c r${r.style}"><svg class="i"><use href="#${r.icone}"/></svg></div><div class="bd"><div class="badges"><span class="badge">Club IoT et IA</span></div><h3>${r.titre}</h3><p>${r.desc}</p>${lecons}<a class="btn s" href="${r.playlist}" target="_blank" rel="noopener"><svg class="i"><use href="#yt"/></svg>Voir la playlist</a></div>`;
+  const ban = r.photo
+    ? `<div class="ban ph${r.style}"><img src="${r.photo}" alt="${r.alt}" loading="lazy"><span class="iot"><svg class="i"><use href="#wifi"/></svg>IoT</span><span class="cap"><svg class="i"><use href="#${r.icone}"/></svg>${r.legende}</span></div>`
+    : `<div class="ban c r${r.style}"><svg class="i"><use href="#${r.icone}"/></svg></div>`;
+  el.innerHTML = ban + `<div class="bd"><div class="badges">${(r.badges || ["Club IoT et IA"]).map(b => `<span class="badge${b === "English" ? " en" : ""}">${b}</span>`).join("")}</div><h3>${r.titre}</h3><p>${r.desc}</p>${lecons}<a class="btn s" href="${r.playlist}" target="_blank" rel="noopener"><svg class="i"><use href="#yt"/></svg>${r.bouton || "Voir la playlist"}</a></div>`;
   rl.appendChild(el);
 });
 const liste = document.getElementById("cours-liste");
