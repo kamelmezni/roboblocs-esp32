@@ -1,0 +1,22 @@
+name: Vérifications
+on:
+  push:
+  pull_request:
+jobs:
+  marques:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Marques d'auteur et empreinte invisible
+        run: python tools/verifier_marques.py --strict docs/roboblocs.html
+      - name: Le JavaScript de l'IDE est valide
+        run: |
+          python - <<'PY'
+          s = open("docs/roboblocs.html", encoding="utf-8").read()
+          i = s.rfind("<script>") + 8
+          open("/tmp/ide.js", "w", encoding="utf-8").write(s[i:s.rfind("</script>")])
+          PY
+          node --check /tmp/ide.js
