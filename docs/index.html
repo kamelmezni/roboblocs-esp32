@@ -1,27 +1,418 @@
 <!DOCTYPE html>
-<html lang="fr"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="author" content="Prof. MEZNI Kamel - Lycée Liberté Jendouba">
-<title>RoboBlocs ESP32 : programmer l'ESP32 par blocs</title>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kamel MEZNI – Professeur d'informatique – Lycée Liberté Jendouba</title>
+<meta name="description" content="Page de Kamel MEZNI, professeur d'informatique au Lycée Liberté Jendouba et animateur du club Internet des Objets et Intelligence Artificielle. Cours en ligne.">
 <style>
-:root{--bg:#eef5fc;--fg:#0b2e6b;--card:#fff;--ac:#0a6fd0;--mut:#475569}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f172a;--fg:#e2e8f0;--card:#1e293b;--ac:#60a5fa;--mut:#94a3b8}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,Arial,sans-serif;line-height:1.55}
-header{text-align:center;padding:48px 16px 24px}h1{font-size:2.2rem;margin:0 0 8px}p.s{color:var(--mut);max-width:620px;margin:0 auto}
-.btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0}
-a.b{background:var(--ac);color:#fff;text-decoration:none;font-weight:700;padding:11px 20px;border-radius:12px}a.b.o{background:none;color:var(--ac);border:2px solid var(--ac)}
-main{max-width:900px;margin:auto;padding:0 16px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.c{background:var(--card);border-radius:16px;padding:16px 18px;box-shadow:0 2px 10px #0a6fd022}.c h2{font-size:1.05rem;margin:0 0 6px}.c p{margin:0;color:var(--mut);font-size:.95rem}
-footer{text-align:center;padding:20px 16px 32px;color:var(--mut);font-size:.9rem}footer a{color:var(--ac)}
-</style></head><body>
-<header><h1>🤖 RoboBlocs ESP32</h1>
-<p class="s">Programmez une carte ESP32 par blocs, directement dans le navigateur. Gratuit, sans installation, pensé pour la classe.</p>
-<div class="btns"><a class="b" href="roboblocs.html">▶ Ouvrir l'IDE</a><a class="b o" href="ide.html">📖 Guide</a><a class="b o" href="https://github.com/kamelmezni/roboblocs-esp32">⭐ GitHub</a></div></header>
-<main>
-<div class="c"><h2>🧩 Blocs → MicroPython</h2><p>Glissez-déposez des blocs, le code MicroPython est généré et envoyé à la carte.</p></div>
-<div class="c"><h2>🔌 USB depuis le navigateur</h2><p>Chrome ou Edge (Web Serial) : envoyer, lancer, arrêter, démarrage autonome.</p></div>
-<div class="c"><h2>📶 Wi-Fi et tableau de bord</h2><p>Serveur web, point d'accès, QR code et tableau de bord en temps réel.</p></div>
-<div class="c"><h2>🆕 Radar de recul</h2><p>Capteur ultrason, LED, buzzer et page web avec ampoule d'alerte.</p></div>
+:root{--a:#2563eb;--b:#06b6d4;--am:#fbbf24;--bg:#f1f6ff;--card:#fff;--tx:#0f172a;--mut:#475569;--line:#d6e2fa}
+@media(prefers-color-scheme:dark){:root{--bg:#0a0f1f;--card:#16203a;--tx:#f8fafc;--mut:#cbd5e1;--line:#26335a}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 "Segoe UI",system-ui,Arial,sans-serif}
+:focus-visible{outline:3px solid var(--am);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hero{position:relative;overflow:hidden;color:#fff;background:radial-gradient(900px 500px at 85% 20%,#12407f,transparent 60%),radial-gradient(700px 400px at 0 100%,#065f73,transparent 60%),#071226;padding-bottom:64px}
+.hero:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(125,211,252,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(125,211,252,.08) 1px,transparent 1px);background-size:40px 40px;mask-image:linear-gradient(#000,transparent 90%)}
+.hero .wrap{position:relative}
+nav{display:flex;gap:22px;justify-content:flex-end;padding:18px 0;font-weight:600}
+nav a{color:#bae6fd;text-decoration:none}nav a:hover{color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:center;padding-top:20px}
+h1{font-size:clamp(38px,6.5vw,66px);line-height:1;margin:0 0 16px;letter-spacing:-.025em}
+.hero p{font-size:1.15rem;max-width:30em;margin:0 0 22px;color:#dbeafe}
+.tags{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px}
+.tag{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.12);border:1.5px solid rgba(125,211,252,.5);border-radius:999px;padding:5px 14px;font-weight:600;font-size:.92rem}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;gap:8px;align-items:center;background:var(--am);color:#1c1300;text-decoration:none;font-weight:700;border-radius:999px;padding:10px 22px;transition:transform .2s}
+.btn:hover{transform:scale(1.05)}
+.btn.o{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.7)}
+.btn.s{background:var(--a);color:#fff}
+.vis{background:rgba(7,18,38,.75);border:1.5px solid rgba(125,211,252,.35);border-radius:24px;padding:14px;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 60px rgba(34,211,238,.18)}
+.vis .row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px}
+.vis svg.art{width:100%;height:auto;display:block}
+.vis .mid{color:var(--am);font-size:1.6rem}
+.vis small{display:flex;justify-content:space-between;padding:6px 10px 0;color:#7dd3fc;font-weight:600}
+.flow{stroke-dasharray:6 8;animation:fl 1.6s linear infinite}@keyframes fl{to{stroke-dashoffset:-28}}
+.pulse{animation:pu 2.4s ease-in-out infinite}@keyframes pu{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.flow,.pulse{animation:none}}
+section{padding:60px 0 0}
+h2{font-size:clamp(26px,3.6vw,34px);margin:0 0 6px;display:flex;gap:12px;align-items:center}
+h2 .i{color:var(--a);flex:none}
+.lead{color:var(--mut);margin:0 0 26px;max-width:42em}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-bottom:26px}
+.chip{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:16px 8px;text-align:center;font-weight:600;font-size:.95rem}
+.chip .i{display:block;margin:0 auto 6px;font-size:2rem;color:var(--b)}
+.chip.ai .i{color:#d97706}
+.two,.cards{display:grid;gap:22px}
+.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.cards{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.card{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:0 6px 20px rgba(15,23,42,.12);display:flex;flex-direction:column}
+.card .ban{background:#0b1b36;padding:10px}
+.card .ban svg{width:100%;height:150px;display:block}
+.card .bd{padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.card h3{margin:0;font-size:1.25rem;line-height:1.3}
+.card p,.card ul{margin:0;color:var(--mut)}.card ul{padding-left:1.1em}
+.ban.c{display:grid;place-items:center;height:150px;color:#fff;font-size:4.5rem;background:linear-gradient(135deg,var(--a),var(--b))}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{background:linear-gradient(135deg,var(--a),var(--b));color:#fff;border-radius:999px;padding:1px 12px;font-size:.85rem;font-weight:600}
+.card .btn{align-self:flex-start;margin-top:auto}
+.card.soon{box-shadow:none;border:2px dashed var(--line);background:transparent}
+.card.soon .ban.c{background:var(--line);color:var(--mut)}
+.lyc{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;background:var(--card);border-radius:22px;padding:24px;box-shadow:0 6px 20px rgba(15,23,42,.1)}
+.lyc>.i{font-size:3.4rem;color:var(--a)}.lyc h3{margin:0 0 4px}.lyc p{margin:0;color:var(--mut)}
+footer{margin-top:70px;padding:28px 0 36px;text-align:center;color:var(--mut);border-top:1px solid var(--line)}
+@media(max-width:800px){.grid{grid-template-columns:1fr}nav{justify-content:center;flex-wrap:wrap;gap:14px}}
+
+#net{position:absolute;inset:0;width:100%;height:100%}
+.typed{font-size:clamp(18px,2.6vw,24px);font-weight:700;color:#7dd3fc;margin:0 0 14px;min-height:2.9em}
+.typed i{display:inline-block;width:3px;height:1em;background:var(--am);margin-left:3px;vertical-align:-.15em;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+@keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.hero h1,.typed,.hero p,.tags,.btns,.vis{animation:up .8s cubic-bezier(.2,.8,.2,1) both}
+.typed{animation-delay:.12s}.hero p{animation-delay:.24s}.tags{animation-delay:.36s}.btns{animation-delay:.48s}.vis{animation-delay:.3s}
+.vis{animation-name:up,flt;animation-duration:.8s,6s;animation-delay:.3s,1.2s;animation-iteration-count:1,infinite;animation-timing-function:cubic-bezier(.2,.8,.2,1),ease-in-out;animation-fill-mode:both,none}
+@keyframes flt{50%{transform:translateY(-8px)}}
+.vis .mid{animation:nx 1.4s ease-in-out infinite}@keyframes nx{50%{transform:translateX(7px)}}
+.btn{position:relative;overflow:hidden}
+.btn:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s}
+.btn:hover:after{transform:translateX(120%)}
+.chip{transition:transform .25s,border-color .25s}.chip:hover{transform:translateY(-6px) rotate(-2deg);border-color:var(--b)}
+.chip:hover .i{animation:wob .6s}@keyframes wob{25%{transform:rotate(-14deg) scale(1.2)}75%{transform:rotate(12deg) scale(1.2)}}
+.card{transition:transform .3s,box-shadow .3s}.card:not(.soon):hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(37,99,235,.25)}
+.ban.c .i{transition:transform .4s}.card:hover .ban.c .i{transform:scale(1.18) rotate(-6deg)}
+.js .rv{opacity:0;transform:translateY(34px) scale(.97);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:var(--d,0s)}
+.js .rv.on{opacity:1;transform:none}
+.js .rv.on.card:not(.soon):hover{transform:translateY(-8px)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.js .rv{opacity:1;transform:none}}
+.btn.yt{background:#dc2626;color:#fff}
+.lc{margin:0;padding-left:1.4em;color:var(--mut);display:grid;gap:5px}.lc a{color:var(--a);font-weight:600}
+.ban.r{background:linear-gradient(135deg,#0b1b36,#12407f);color:var(--b)}.ban.r.m{background:linear-gradient(135deg,#0b1b36,#7c2d12);color:var(--am)}
+.vide{font-style:italic}
+
+/* App Android */
+.apk{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);background:var(--card);border-radius:26px;overflow:hidden;box-shadow:0 10px 34px rgba(15,23,42,.16)}
+.apk .info{padding:30px 30px 32px;display:flex;flex-direction:column;gap:14px}
+.apk h3{margin:0;font-size:clamp(22px,3vw,28px);line-height:1.2}
+.apk .sub{margin:0;color:var(--mut)}
+.apk .feats{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:12px}
+.apk .feats li{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start}
+.apk .feats .ic{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:1.3rem}
+.apk .feats b{display:block}.apk .feats span{color:var(--mut);font-size:.95rem}
+.apk .dl{margin-top:6px;background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;border-radius:18px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.apk .dl b{font-size:1.1rem}.apk .dl small{color:#dbeafe;font-size:.88rem;line-height:1.45}
+.apk .dl .btn .i{font-size:1.3em}.apk .dl .btn{align-self:flex-start;font-size:1.05rem;padding:12px 26px}
+.apk .shots{min-width:0;background:linear-gradient(135deg,#0b1b36,#12407f);padding:26px 0;display:flex;align-items:center}
+.apk .strip{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 24px 14px;width:100%;-webkit-overflow-scrolling:touch}
+.apk .strip figure{margin:0;flex:0 0 auto;scroll-snap-align:center;width:150px}
+.apk .strip img{display:block;width:100%;height:auto;border:5px solid #0f172a;border-radius:22px;box-shadow:0 10px 24px rgba(0,0,0,.45);background:#fff}
+.apk .strip figcaption{color:#bae6fd;font-size:.82rem;font-weight:600;text-align:center;margin-top:8px}
+.apk .tagline{font-style:italic;color:var(--a);font-weight:600;margin:0}
+@media(max-width:800px){.apk{grid-template-columns:minmax(0,1fr)}.apk .shots{order:-1}.apk .strip figure{width:140px}}
+
+/* Annonce + menu attirants */
+.annonce{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;text-align:center;padding:12px 16px;color:#fff;text-decoration:none;font-weight:700;background:linear-gradient(90deg,#16a34a,#06b6d4,#2563eb,#16a34a);background-size:300% 100%;animation:gl 6s linear infinite;position:relative;z-index:2}
+.annonce:hover{filter:brightness(1.1)}
+.annonce .nv{background:#fbbf24;color:#1c1300;border-radius:999px;padding:2px 12px;font-size:.8rem;letter-spacing:.06em;animation:bump 1.4s ease-in-out infinite}
+.annonce .go{background:#fff;color:#1e3a8a;border-radius:999px;padding:4px 16px;font-size:.92rem}
+.annonce .i{font-size:1.3em}
+@keyframes gl{to{background-position:300% 0}}@keyframes bump{50%{transform:scale(1.15)}}
+nav a.nav-apk,nav a.nav-ide{display:inline-flex;align-items:center;gap:6px;color:#fff;border-radius:999px;padding:6px 16px;position:relative}
+nav a.nav-apk{background:linear-gradient(135deg,#16a34a,#22c55e);box-shadow:0 0 0 0 rgba(34,197,94,.7);animation:ring 2s infinite}
+nav a.nav-ide{background:linear-gradient(135deg,#f97316,#ec4899);box-shadow:0 0 14px rgba(249,115,22,.55)}
+nav a.nav-apk:hover,nav a.nav-ide:hover{transform:scale(1.06)}
+nav a.nav-apk b{background:#fbbf24;color:#1c1300;border-radius:999px;font-size:.65rem;padding:1px 7px}
+@keyframes ring{70%{box-shadow:0 0 0 12px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.btn.ide{background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;border:0;box-shadow:0 0 22px rgba(249,115,22,.55)}
+.btn.apkb{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 0 22px rgba(34,197,94,.5)}
+.card .btn.ide{background:linear-gradient(135deg,#f97316,#ec4899)}
+nav{flex-wrap:wrap}
+@media(max-width:800px){.annonce{font-size:.92rem}}
+/* Guides + compteur */
+.btn.pdf{background:#dc2626;color:#fff}.btn.wa{background:#25d366;color:#06361a}.btn.dl{background:#0e7490;color:#fff}
+.card .btn.wa,.card .btn.pdf,.card .btn.dl,.card .btn.s{margin-top:0}
+.gbtns{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto}.gbtns .btn{align-self:auto;font-size:.88rem;padding:8px 13px;gap:6px}
+.ban.g1{background:linear-gradient(135deg,#0b1b36,#2563eb)}.ban.g2{background:linear-gradient(135deg,#0b1b36,#c2410c)}
+.vbtn{display:inline-flex;gap:8px;align-items:center;font:700 .92rem/1.2 "Segoe UI",system-ui,Arial,sans-serif;color:#fff;background:rgba(255,255,255,.12);border:1.5px solid rgba(125,211,252,.6);border-radius:999px;padding:5px 16px;cursor:default}
+.vbtn b{color:var(--am);font-size:1.15em;font-variant-numeric:tabular-nums}
+footer .vbtn{background:linear-gradient(135deg,#1e3a8a,#2563eb);border-color:transparent;margin-bottom:14px}
+/* Projet open source GitHub */
+a.tag{color:inherit;text-decoration:none;transition:transform .2s,background .2s}a.tag:hover{transform:scale(1.05);background:rgba(255,255,255,.25)}
+.btn.gh{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;box-shadow:0 0 22px rgba(168,85,247,.55)}.card .btn.gh{margin-top:0}
+.btn.git{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;border:0;box-shadow:0 0 24px rgba(168,85,247,.65);animation:glow 2s ease-in-out infinite}
+.btn.git b,.annonce.gitb .nv,nav a.nav-git b{font-size:.68rem;letter-spacing:.06em}
+.btn.git b{background:#fbbf24;color:#1c1300;border-radius:999px;padding:1px 8px;animation:bump 1.4s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 38px rgba(236,72,153,.9)}}
+.annonce.gitb{background:linear-gradient(90deg,#24292f,#7c3aed,#ec4899,#24292f);background-size:300% 100%;animation:gl 6s linear infinite}
+.annonce.gitb .go{color:#6d28d9}
+nav a.nav-git{display:inline-flex;align-items:center;gap:6px;color:#fff;border-radius:999px;padding:6px 16px;background:linear-gradient(135deg,#7c3aed,#ec4899);box-shadow:0 0 0 0 rgba(168,85,247,.7);animation:ringg 2s infinite}
+nav a.nav-git:hover{transform:scale(1.06)}
+nav a.nav-git b{background:#fbbf24;color:#1c1300;border-radius:999px;padding:1px 7px}
+@keyframes ringg{70%{box-shadow:0 0 0 12px rgba(168,85,247,0)}100%{box-shadow:0 0 0 0 rgba(168,85,247,0)}}
+.card.git .ban.c{background:linear-gradient(135deg,#24292f,#57606a)}
+.gbox{display:flex;flex-wrap:wrap;gap:10px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="chip" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></symbol>
+<symbol id="wifi" viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19.5" r=".8"/></symbol>
+<symbol id="sensor" viewBox="0 0 24 24"><path d="M14 14.5V5a2 2 0 0 0-4 0v9.5a4 4 0 1 0 4 0z"/><path d="M12 9v7"/></symbol>
+<symbol id="brain" viewBox="0 0 24 24"><circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="7" r="2"/><circle cx="19" cy="17" r="2"/><path d="M7 6.5l3.2 4.2M7 17.5l3.2-4.2M14 11l3.3-3M14 13l3.3 3"/></symbol>
+<symbol id="robot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V4M9 13h.01M15 13h.01M9 16.5h6M2 12v3M22 12v3"/><circle cx="12" cy="3.5" r="1"/></symbol>
+<symbol id="db" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+<symbol id="gh" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="9" r="2.2"/><path d="M6 7.2v9.6M18 11.2c0 4.5-6.500 3.200-12 5.800"/></symbol>
+<symbol id="school" viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v9h14v-9M9 19v-5h6v5M12 4V2"/></symbol>
+<symbol id="phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/></symbol>
+<symbol id="download" viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></symbol>
+<symbol id="bars" viewBox="0 0 24 24"><path d="M6 20v-7M12 20V5M18 20v-10"/></symbol>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="yt" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="M10 9l5 3-5 3z"/></symbol>
+<symbol id="book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 8h7"/></symbol>
+<symbol id="code" viewBox="0 0 24 24"><path d="M8 8l-5 4 5 4M16 8l5 4-5 4M14 5l-4 14"/></symbol>
+<symbol id="mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+<symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.3c2.2.8 3.5 2.7 3.5 5.7"/></symbol>
+<symbol id="eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="wa" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z"/><path d="M8.800 8.500c.3 2.600 2.900 5.500 6 6.200M8.800 8.500l1-.5.800 1.700-.7.800M15 14.700l.5-.8 1.700.8-.4 1"/></symbol>
+<symbol id="iot" viewBox="0 0 240 180">
+<g fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round">
+<path class="flow" d="M96 90H64L48 60M96 90H64L48 128M144 90H176L194 128M144 90H176L194 56"/>
+<path class="pulse" d="M98 30a30 30 0 0 1 44 0M106 38a18 18 0 0 1 28 0"/><circle cx="120" cy="46" r="3" fill="#22d3ee"/>
+<rect x="96" y="66" width="48" height="48" rx="8" fill="#0e2a52"/><rect x="108" y="78" width="24" height="24" rx="4" stroke="#fbbf24"/>
+<path d="M108 66v-8M120 66v-8M132 66v-8M108 114v8M120 114v8M132 114v8"/>
+<g fill="#0e2a52"><circle cx="40" cy="50" r="16"/><circle cx="40" cy="138" r="16"/><circle cx="202" cy="138" r="16"/><circle cx="202" cy="50" r="16"/></g>
+<path d="M40 43v10M36 53a4 4 0 1 0 8 0M33 138a7 7 0 0 1 14 0M40 131v-4M202 130c-4 5-6 8-6 11a6 6 0 0 0 12 0c0-3-2-6-6-11zM196 50h12M202 44v12M197 45l10 10M207 45l-10 10"/>
+</g></symbol>
+<symbol id="ia" viewBox="0 0 240 180">
+<g fill="none" stroke="#7dd3fc" stroke-width="1.4" opacity=".6"><path d="M40 40L120 25M40 40L120 65M40 40L120 115M40 90L120 25M40 90L120 65M40 90L120 115M40 90L120 155M40 140L120 65M40 140L120 115M40 140L120 155M120 25L200 60M120 25L200 120M120 65L200 60M120 65L200 120M120 115L200 60M120 115L200 120M120 155L200 60M120 155L200 120"/></g>
+<g fill="#0e2a52" stroke="#22d3ee" stroke-width="2"><circle cx="40" cy="40" r="9"/><circle cx="40" cy="90" r="9"/><circle cx="40" cy="140" r="9"/><circle cx="120" cy="25" r="9"/><circle cx="120" cy="65" r="9"/><circle cx="120" cy="115" r="9"/><circle cx="120" cy="155" r="9"/></g>
+<g fill="#fbbf24" stroke="#fde68a" stroke-width="2"><circle class="pulse" cx="200" cy="60" r="11"/><circle class="pulse" cx="200" cy="120" r="11"/></g>
+</symbol>
+</defs></svg>
+
+<a class="annonce gitb" href="https://github.com/kamelmezni/roboblocs-esp32" target="_blank" rel="noopener"><span class="nv">NOUVEAU</span><svg class="i"><use href="#gh"/></svg><span>Mon IDE RoboBlocs ESP32 est maintenant open source sur GitHub !</span><span class="go">Voir le projet →</span></a>
+<a class="annonce" href="#android"><span class="nv">NOUVEAU</span><svg class="i"><use href="#phone"/></svg><span>Mon cours Base de Données est maintenant disponible en application Android !</span><span class="go">Découvrir et télécharger →</span></a>
+<header class="hero">
+<canvas id="net" aria-hidden="true"></canvas>
+<div class="wrap">
+<nav aria-label="Navigation"><a href="#cours">Mes cours</a><a href="#guides">Guides</a><a class="nav-apk" href="#android"><svg class="i"><use href="#phone"/></svg>App Android <b>NOUVEAU</b></a><a class="nav-git" href="https://github.com/kamelmezni/roboblocs-esp32" target="_blank" rel="noopener"><svg class="i"><use href="#gh"/></svg>GitHub <b>NOUVEAU</b></a><a class="nav-ide" href="ide.html"><svg class="i"><use href="#code"/></svg>IDE RoboBlocs</a><a href="#robotique">Robotique</a><a href="#club">Le club</a><a href="#lycee">Lycée</a><a href="#contact">Contact</a></nav>
+<div class="grid">
+<div>
+<h1>Kamel MEZNI</h1>
+<div class="typed">Je vous guide dans <span id="tp">l'informatique</span><i></i></div>
+<p>Professeur d'informatique. J'enseigne au Lycée Liberté Jendouba et j'anime un club où les élèves construisent des objets connectés et découvrent l'intelligence artificielle.</p>
+<div class="tags">
+<span class="tag"><svg class="i"><use href="#school"/></svg>Lycée Liberté Jendouba</span>
+<span class="tag"><svg class="i"><use href="#chip"/></svg>Club IoT et IA</span>
+<button type="button" class="vbtn" title="Nombre de visiteurs du site"><svg class="i"><use href="#users"/></svg><b class="vcount">300</b> visiteurs</button>
+</div>
+<div class="btns"><a class="btn" href="#cours"><svg class="i"><use href="#book"/></svg>Voir mes cours</a><a class="btn apkb" href="#android"><svg class="i"><use href="#phone"/></svg>App Android du cours BD</a><a class="btn ide" href="ide.html"><svg class="i"><use href="#code"/></svg>Mon IDE RoboBlocs</a><a class="btn git" href="https://github.com/kamelmezni/roboblocs-esp32" target="_blank" rel="noopener"><svg class="i"><use href="#gh"/></svg>RoboBlocs sur GitHub <b>NOUVEAU</b></a><a class="btn o" href="#club">Découvrir le club</a></div>
+</div>
+<div class="vis" role="img" aria-label="Des objets connectés envoient des données vers un réseau d'intelligence artificielle">
+<div class="row">
+<svg class="art"><use href="#iot"/></svg>
+<svg class="i mid"><use href="#arrow"/></svg>
+<svg class="art"><use href="#ia"/></svg>
+</div>
+<small><span>Objets connectés</span><span>Intelligence artificielle</span></small>
+</div>
+</div>
+</div>
+</header>
+
+<main class="wrap">
+<section id="cours">
+<h2><svg class="i"><use href="#book"/></svg>Mes cours</h2>
+<p class="lead">Choisissez votre classe et ouvrez le cours. Les nouveaux cours seront ajoutés au fil de l'année.</p>
+<div class="cards" id="cours-liste"></div>
+</section>
+
+<section id="guides">
+<h2><svg class="i"><use href="#book"/></svg>Guides pratiques en ligne</h2>
+<p class="lead">Deux guides pas à pas, avec captures d'écran, pour manipuler une base de données avec phpMyAdmin. Chaque guide existe en version web et en PDF (à lire en ligne, à télécharger ou à envoyer par WhatsApp).</p>
+<div class="cards" id="guides-liste"></div>
+</section>
+
+<section id="android">
+<h2><svg class="i"><use href="#phone"/></svg>Version Android du cours Base de Données</h2>
+<p class="lead">Mon cours Base de Données pour les élèves de 4ème SI est maintenant disponible en application Android : on révise et on s'entraîne partout, directement sur le téléphone.</p>
+<article class="apk">
+<div class="info">
+<div class="badges"><span class="badge">Application Android</span><span class="badge">4ème SI</span><span class="badge">Gratuit</span></div>
+<h3>Cahier de cours Base de Données</h3>
+<p class="sub">Lycée Liberté Jendouba • Prof : MEZNI Kamel • 2026-2027</p>
+<ul class="feats">
+<li><div class="ic" style="background:#2563eb"><svg class="i"><use href="#book"/></svg></div><div><b>Des cours clairs et complets</b><span>Conception de la base de données, SQL, exemples et explications simples.</span></div></li>
+<li><div class="ic" style="background:#16a34a"><svg class="i"><use href="#code"/></svg></div><div><b>Un playground SQL</b><span>Écris et teste tes requêtes SQL directement dans l'application.</span></div></li>
+<li><div class="ic" style="background:#7c3aed"><svg class="i"><use href="#check"/></svg></div><div><b>Des quiz et exercices</b><span>Pour vérifier tes connaissances et progresser pas à pas.</span></div></li>
+<li><div class="ic" style="background:#f59e0b"><svg class="i"><use href="#bars"/></svg></div><div><b>Suivi de ta progression</b><span>Revois tes chapitres et mesure tes acquis.</span></div></li>
+</ul>
+<div class="dl"><b>Télécharge maintenant la version Android</b>
+<a class="btn" href="https://betadrop.app/i/y2DfM2" target="_blank" rel="noopener"><svg class="i"><use href="#download"/></svg>Télécharger et installer l'APK</a>
+<small>Ouvre le lien depuis ton téléphone Android. Si le système le demande, autorise l'installation de l'application depuis cette source.</small></div>
+<p class="tagline">Apprendre aujourd'hui… réussir demain !</p>
+</div>
+<div class="shots"><div class="strip" tabindex="0" aria-label="Captures d'écran de l'application">
+<figure><img src="img/app-accueil.jpg" alt="Écran d'accueil : cahier de cours et progression" loading="lazy"><figcaption>Accueil</figcaption></figure>
+<figure><img src="img/app-cours.jpg" alt="Cours avec question, réponse du professeur et explication" loading="lazy"><figcaption>Cours</figcaption></figure>
+<figure><img src="img/app-playground.jpg" alt="Playground SQL interactif avec résultat de requête" loading="lazy"><figcaption>Playground SQL</figcaption></figure>
+<figure><img src="img/app-quiz.jpg" alt="Quiz d'auto-évaluation BAC SI" loading="lazy"><figcaption>Quiz BAC SI</figcaption></figure>
+</div></div>
+</article>
+</section>
+
+<section id="ide">
+<h2><svg class="i"><use href="#code"/></svg>Mon IDE : RoboBlocs ESP32</h2>
+<p class="lead">Un environnement de programmation par blocs conçu pour mes élèves : on assemble des blocs, le code Python est généré automatiquement et envoyé à la carte ESP32 en un clic. Le projet est <b>open source</b> : le code est disponible sur GitHub.</p>
+<div class="cards">
+<article class="card"><div class="ban c"><svg class="i"><use href="#code"/></svg></div>
+<div class="bd"><div class="badges"><span class="badge">IDE gratuit</span><span class="badge">ESP32</span><span class="badge">MicroPython</span></div>
+<h3>RoboBlocs ESP32</h3><p>Connexion USB directe depuis le navigateur, génération automatique du code Python, sauvegarde des projets et enregistrement du programme sur la carte.</p>
+<p style="background:#ffedd5;color:#7c2d12;border:1.5px solid #fb923c;border-radius:12px;padding:10px 14px;margin:12px 0"><b>⚠️ Avant de commencer :</b> installer le pilote <b>CP210x_Windows_Drivers</b> et formater la carte avec <b>Thonny</b> pour qu'elle reçoive le code MicroPython.</p>
+<div class="btns"><a class="btn ide" href="roboblocs.html">Lancer l'IDE<svg class="i"><use href="#arrow"/></svg></a><a class="btn s" href="ide.html" style="background:#0e7490">Découvrir et comprendre</a><a class="btn gh" href="https://github.com/kamelmezni/roboblocs-esp32" target="_blank" rel="noopener"><svg class="i"><use href="#gh"/></svg>Code source GitHub</a></div></div></article>
+<article class="card"><div class="bd"><h3>Ce que vous pouvez faire</h3><ul>
+<li>Connecter la carte ESP32 par câble USB</li><li>Voir le code Python généré en direct</li><li>Envoyer et lancer le programme, ou l'arrêter</li><li>Mettre le programme sur la carte (démarrage automatique)</li><li>Enregistrer et rouvrir ses projets</li><li>13 exemples prêts à charger, dont le <b>radar de recul avec tableau de bord Wi-Fi</b>, QR code Wi-Fi, Bluetooth</li></ul></div></article>
+<article class="card git"><div class="ban c"><svg class="i"><use href="#gh"/></svg></div>
+<div class="bd"><div class="badges"><span class="badge">Open source</span><span class="badge">Licence MIT</span></div>
+<h3>RoboBlocs est sur GitHub</h3><p>Le projet existe maintenant sur GitHub : code source, guide, catalogue d'exemples et feuille de route. Vous pouvez le télécharger, le tester, signaler un problème, proposer un nouvel exemple ou contribuer.</p>
+<div class="gbox"><a class="btn gh" href="https://github.com/kamelmezni/roboblocs-esp32" target="_blank" rel="noopener"><svg class="i"><use href="#gh"/></svg>Voir le projet sur GitHub</a></div></div></article>
+</div>
+</section>
+
+<section id="robotique">
+<h2><svg class="i"><use href="#robot"/></svg>Robotique du club</h2>
+<p class="lead">Deux parcours en vidéo, du premier montage jusqu'au robot qui bouge. Suivez les leçons dans l'ordre.</p>
+<div class="cards" id="robot-liste"></div>
+</section>
+
+<section id="club">
+<h2><svg class="i"><use href="#chip"/></svg>Le club Internet des Objets et Intelligence Artificielle</h2>
+<p class="lead">Un espace pour comprendre, fabriquer et tester : des capteurs qui mesurent le monde, des programmes qui apprennent à partir des données.</p>
+<div class="chips">
+<div class="chip"><svg class="i"><use href="#sensor"/></svg>Capteurs</div>
+<div class="chip"><svg class="i"><use href="#chip"/></svg>Cartes électroniques</div>
+<div class="chip"><svg class="i"><use href="#wifi"/></svg>Connexion sans fil</div>
+<div class="chip ai"><svg class="i"><use href="#brain"/></svg>Réseaux de neurones</div>
+<div class="chip ai"><svg class="i"><use href="#robot"/></svg>Robotique</div>
+<div class="chip ai"><svg class="i"><use href="#db"/></svg>Données</div>
+</div>
+<div class="two">
+<article class="card"><div class="ban"><svg viewBox="0 0 240 180" role="img" aria-label="Illustration IoT"><use href="#iot"/></svg></div>
+<div class="bd"><h3>Internet des Objets (IoT)</h3><p>Relier des objets du quotidien à Internet pour mesurer, surveiller et agir à distance.</p>
+<ul><li>Lire la température, l'humidité, la lumière</li><li>Programmer une carte et la connecter au réseau</li></ul></div></article>
+<article class="card"><div class="ban"><svg viewBox="0 0 240 180" role="img" aria-label="Illustration IA"><use href="#ia"/></svg></div>
+<div class="bd"><h3>Intelligence Artificielle (IA)</h3><p>Comprendre comment une machine apprend à reconnaître, classer et prédire.</p>
+<ul><li>Découvrir les réseaux de neurones</li><li>Utiliser les données des capteurs</li></ul></div></article>
+</div>
+</section>
+
+<section id="lycee">
+<h2><svg class="i"><use href="#school"/></svg>Au Lycée Liberté Jendouba</h2>
+<div class="lyc"><svg class="i"><use href="#school"/></svg><div><h3>Enseignement de l'informatique</h3><p>Cours structurés avec exercices corrigés, pour réviser en autonomie et préparer les devoirs.</p></div></div>
+</section>
+
+<section id="contact">
+<h2><svg class="i"><use href="#mail"/></svg>Contact</h2>
+<p class="lead">Une question sur un cours ou sur le club ? Écrivez-moi à kamel.mezni@gmail.com ou retrouvez mes vidéos sur YouTube.</p>
+<div class="btns"><a class="btn s" href="mailto:kamel.mezni@gmail.com"><svg class="i"><use href="#mail"/></svg>Envoyer un courriel</a><a class="btn yt" href="https://www.youtube.com/@kamelalmezni/" target="_blank" rel="noopener"><svg class="i"><use href="#yt"/></svg>Ma chaîne YouTube</a></div>
+</section>
 </main>
-<footer>© 2026 Prof. MEZNI Kamel · Lycée Liberté Jendouba · Club Internet des Objets et IA · <a href="https://github.com/kamelmezni/roboblocs-esp32">Code source (MIT)</a></footer>
-</body></html>
+<footer><div class="wrap"><button type="button" class="vbtn" title="Nombre de visiteurs du site"><svg class="i"><use href="#users"/></svg><b class="vcount">300</b> visiteurs</button><br>© <span id="an"></span> Kamel MEZNI – Lycée Liberté Jendouba</div></footer>
+
+<script>
+/* Pour ajouter un cours : copiez un bloc { ... }, modifiez-le, et placez le fichier du cours dans ce dossier. */
+const COURS = [
+  { titre:"Cours complet de Base de données", matiere:"STI", classe:"4SI1", icone:"db",
+    desc:"Cours illustré avec exercices et corrections pour comprendre les bases de données.", lien:"cours-bd-4si1.html", apk:"#android" },
+  { titre:"Prochain cours", icone:"book", desc:"Bientôt disponible.", lien:"" }
+];
+/* Robotique du club : mettez ici les leçons de chaque playlist, dans l'ordre.
+   Exemple de leçon : { titre:"Leçon 1 : faire clignoter une LED", lien:"https://www.youtube.com/watch?v=..." } */
+const ROBOTIQUE = [
+  { titre:"Robotique avec ESP32", icone:"chip", style:"",
+    desc:"Programmer la carte ESP32 pour piloter des capteurs, des moteurs et un robot connecté.",
+    playlist:"https://www.youtube.com/@kamelalmezni/playlists", lecons:[] },
+  { titre:"Robotique avec micro:bit", icone:"robot", style:" m",
+    desc:"Découvrir la programmation par blocs et par code avec la carte micro:bit.",
+    playlist:"https://www.youtube.com/@kamelalmezni/playlists", lecons:[] }
+];
+const rl = document.getElementById("robot-liste");
+ROBOTIQUE.forEach(r => {
+  const el = document.createElement("article"); el.className = "card";
+  const lecons = r.lecons.length
+    ? `<ol class="lc">` + r.lecons.map(l => `<li>${l.lien ? `<a href="${l.lien}" target="_blank" rel="noopener">${l.titre}</a>` : l.titre}</li>`).join("") + `</ol>`
+    : `<p class="vide">Les leçons de cette playlist seront listées ici.</p>`;
+  el.innerHTML = `<div class="ban c r${r.style}"><svg class="i"><use href="#${r.icone}"/></svg></div><div class="bd"><div class="badges"><span class="badge">Club IoT et IA</span></div><h3>${r.titre}</h3><p>${r.desc}</p>${lecons}<a class="btn s" href="${r.playlist}" target="_blank" rel="noopener"><svg class="i"><use href="#yt"/></svg>Voir la playlist</a></div>`;
+  rl.appendChild(el);
+});
+const liste = document.getElementById("cours-liste");
+COURS.forEach(c => {
+  const el = document.createElement("article");
+  el.className = "card" + (c.lien ? "" : " soon");
+  const badges = [c.matiere, c.classe].filter(Boolean).map(t => `<span class="badge">${t}</span>`).join("");
+  el.innerHTML = `<div class="ban c"><svg class="i"><use href="#${c.icone}"/></svg></div><div class="bd">` +
+    (badges ? `<div class="badges">${badges}</div>` : "") + `<h3>${c.titre}</h3><p>${c.desc}</p>` +
+    (c.lien ? `<a class="btn s" href="${c.lien}">Ouvrir le cours<svg class="i"><use href="#arrow"/></svg></a>` : "") +
+    (c.apk ? `<a class="btn s" href="${c.apk}" style="background:#16a34a;margin-top:0"><svg class="i"><use href="#phone"/></svg>Version Android</a>` : "") + `</div>`;
+  liste.appendChild(el);
+});
+/* Guides : pour en ajouter un, copiez un bloc { ... } et placez ses fichiers (page HTML + PDF) dans ce dossier. */
+const GUIDES = [
+  { titre:"Créer la base GestionCommande avec phpMyAdmin", classe:"4SI1", type:"Mode graphique", ban:"g1", icone:"db",
+    desc:"Guide visuel pas à pas pour créer une base de données uniquement avec la souris : tables, clés primaires, clés étrangères, saisie des données.",
+    page:"guide-phpmyadmin.html", pdf:"pdf/Guide_GestionCommande_phpMyAdmin.pdf", nom:"Guide_GestionCommande_phpMyAdmin.pdf",
+    wa:"Guide : créer la base GestionCommande avec phpMyAdmin (mode graphique)" },
+  { titre:"Créer une base avec du code SQL, l'exporter et l'importer", classe:"4SI1", type:"Script SQL", ban:"g2", icone:"code",
+    desc:"Créer la base à partir d'un script SQL, puis la sauvegarder (export) et la restaurer (import) avec phpMyAdmin, avec les erreurs fréquentes.",
+    page:"guide-export-import.html", pdf:"pdf/Guide_Export_Import_MySQL.pdf", nom:"Guide_Export_Import_MySQL.pdf",
+    wa:"Guide : exporter et importer une base MySQL (phpMyAdmin)" }
+];
+const gl = document.getElementById("guides-liste");
+GUIDES.forEach(g => {
+  const el = document.createElement("article"); el.className = "card";
+  el.innerHTML = `<div class="ban c ${g.ban}"><svg class="i"><use href="#${g.icone}"/></svg></div><div class="bd">
+    <div class="badges"><span class="badge">Guide</span><span class="badge">${g.classe}</span><span class="badge">${g.type}</span></div>
+    <h3>${g.titre}</h3><p>${g.desc}</p>
+    <div class="gbtns">
+      <a class="btn s" href="${g.page}"><svg class="i"><use href="#book"/></svg>Lire le guide</a>
+      <a class="btn pdf" href="${g.page}#pdf"><svg class="i"><use href="#eye"/></svg>PDF en ligne</a>
+      <a class="btn dl" href="${g.pdf}" download="${g.nom}"><svg class="i"><use href="#download"/></svg>Télécharger</a>
+      <a class="btn wa" href="#" data-wa="${g.wa}" data-pdf="${g.pdf}" data-page="${g.page}"><svg class="i"><use href="#wa"/></svg>WhatsApp</a>
+    </div></div>`;
+  gl.appendChild(el);
+});
+gl.addEventListener("click", ev => {
+  const a = ev.target.closest("[data-wa]"); if (!a) return;
+  ev.preventDefault();
+  const page = new URL(a.dataset.page, location.href).href, pdf = new URL(a.dataset.pdf, location.href).href;
+  const txt = "📘 " + a.dataset.wa + "\n\n👉 Lire en ligne : " + page + "\n📄 Télécharger le PDF : " + pdf + "\n\nProf. MEZNI Kamel – Lycée Liberté Jendouba";
+  window.open("https://wa.me/?text=" + encodeURIComponent(txt), "_blank", "noopener");
+});
+document.getElementById("an").textContent = new Date().getFullYear();
+
+/* Animations */
+document.documentElement.classList.add("js");
+const calme = matchMedia("(prefers-reduced-motion:reduce)").matches;
+/* 1. Texte qui se tape */
+const mots=["l'Internet des Objets","l'Intelligence Artificielle","les bases de données","la robotique avec l'ESP32","l'informatique"],tp=document.getElementById("tp");
+if(!calme){let m=0,c=0,del=false;(function t(){const w=mots[m];c+=del?-1:1;tp.textContent=w.slice(0,c);
+ let d=del?35:75;if(!del&&c===w.length){del=true;d=1400}else if(del&&c===0){del=false;m=(m+1)%mots.length;d=300}setTimeout(t,d)})()}
+/* 2. Réseau de points reliés dans l'en-tête */
+const cv=document.getElementById("net"),cx=cv.getContext("2d");let pts=[],W,H;
+function dim(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;pts=Array.from({length:Math.min(60,Math.floor(W/22))},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5}))}
+function dessine(){cx.clearRect(0,0,W,H);pts.forEach(p=>{if(!calme){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1}
+ cx.fillStyle="rgba(125,211,252,.7)";cx.beginPath();cx.arc(p.x,p.y,1.8,0,6.3);cx.fill()});
+ for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const d=Math.hypot(pts[i].x-pts[j].x,pts[i].y-pts[j].y);
+  if(d<120){cx.strokeStyle="rgba(34,211,238,"+(.35*(1-d/120))+")";cx.beginPath();cx.moveTo(pts[i].x,pts[i].y);cx.lineTo(pts[j].x,pts[j].y);cx.stroke()}}
+ if(!calme)requestAnimationFrame(dessine)}
+dim();dessine();addEventListener("resize",()=>{dim();if(calme)dessine()});
+/* 3. Apparition des blocs au défilement */
+function revele(){const o=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("on");o.unobserve(e.target)}}),{threshold:.15});
+ document.querySelectorAll(".chip,.card,.lyc,h2,.lead").forEach((e,i)=>{e.classList.add("rv");e.style.setProperty("--d",(i%4)*.09+"s");o.observe(e)})}
+revele();
+</script>
+<script src="compteur.js" defer></script>
+</body>
+</html>
