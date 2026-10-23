@@ -197,7 +197,7 @@ nav a.nav-git b{background:#fbbf24;color:#1c1300;border-radius:999px;padding:1px
 <header class="hero">
 <canvas id="net" aria-hidden="true"></canvas>
 <div class="wrap">
-<nav aria-label="Navigation"><a href="#cours">Mes cours</a><a href="#guides">Guides</a><a class="nav-apk" href="#android"><svg class="i"><use href="#phone"/></svg>App Android <b>NOUVEAU</b></a><a class="nav-git" href="https://github.com/kamelmezni/roboblocs-esp32" target="_blank" rel="noopener"><svg class="i"><use href="#gh"/></svg>GitHub <b>NOUVEAU</b></a><a class="nav-ide" href="ide.html"><svg class="i"><use href="#code"/></svg>IDE RoboBlocs</a><a href="#robotique">Robotique</a><a href="#club">Le club</a><a href="#lycee">Lycée</a><a href="#contact">Contact</a></nav>
+<nav aria-label="Navigation"><a href="#cours">Mes cours</a><a class="nav-apk" href="#android"><svg class="i"><use href="#phone"/></svg>App Android <b>NOUVEAU</b></a><a class="nav-git" href="https://github.com/kamelmezni/roboblocs-esp32" target="_blank" rel="noopener"><svg class="i"><use href="#gh"/></svg>GitHub <b>NOUVEAU</b></a><a class="nav-ide" href="ide.html"><svg class="i"><use href="#code"/></svg>IDE RoboBlocs</a><a href="#robotique">Robotique</a><a href="#club">Le club</a><a href="#lycee">Lycée</a><a href="#contact">Contact</a></nav>
 <div class="grid">
 <div>
 <h1>Kamel MEZNI</h1>
@@ -225,14 +225,8 @@ nav a.nav-git b{background:#fbbf24;color:#1c1300;border-radius:999px;padding:1px
 <main class="wrap">
 <section id="cours">
 <h2><svg class="i"><use href="#book"/></svg>Mes cours</h2>
-<p class="lead">Choisissez votre classe et ouvrez le cours. Les nouveaux cours seront ajoutés au fil de l'année.</p>
+<p class="lead">Choisissez votre classe et ouvrez le cours, avec ses guides pratiques pas à pas (version web et PDF). Les nouveaux cours seront ajoutés au fil de l'année.</p>
 <div class="cards" id="cours-liste"></div>
-</section>
-
-<section id="guides">
-<h2><svg class="i"><use href="#book"/></svg>Guides pratiques en ligne</h2>
-<p class="lead">Deux guides pas à pas, avec captures d'écran, pour manipuler une base de données avec phpMyAdmin. Chaque guide existe en version web et en PDF (à lire en ligne, à télécharger ou à envoyer par WhatsApp).</p>
-<div class="cards" id="guides-liste"></div>
 </section>
 
 <section id="android">
@@ -348,7 +342,7 @@ ROBOTIQUE.forEach(r => {
   rl.appendChild(el);
 });
 const liste = document.getElementById("cours-liste");
-COURS.forEach(c => {
+function carteCours(c){
   const el = document.createElement("article");
   el.className = "card" + (c.lien ? "" : " soon");
   const badges = [c.matiere, c.classe].filter(Boolean).map(t => `<span class="badge">${t}</span>`).join("");
@@ -357,7 +351,8 @@ COURS.forEach(c => {
     (c.lien ? `<a class="btn s" href="${c.lien}">Ouvrir le cours<svg class="i"><use href="#arrow"/></svg></a>` : "") +
     (c.apk ? `<a class="btn s" href="${c.apk}" style="background:#16a34a;margin-top:0"><svg class="i"><use href="#phone"/></svg>Version Android</a>` : "") + `</div>`;
   liste.appendChild(el);
-});
+}
+COURS.filter(c => c.lien).forEach(carteCours);
 /* Guides : pour en ajouter un, copiez un bloc { ... } et placez ses fichiers (page HTML + PDF) dans ce dossier. */
 const GUIDES = [
   { titre:"Créer la base GestionCommande avec phpMyAdmin", classe:"4SI1", type:"Mode graphique", ban:"g1", icone:"db",
@@ -369,7 +364,7 @@ const GUIDES = [
     page:"guide-export-import.html", pdf:"pdf/Guide_Export_Import_MySQL.pdf", nom:"Guide_Export_Import_MySQL.pdf",
     wa:"Guide : exporter et importer une base MySQL (phpMyAdmin)" }
 ];
-const gl = document.getElementById("guides-liste");
+const gl = liste; /* les guides s'affichent à côté du cours Base de données */
 GUIDES.forEach(g => {
   const el = document.createElement("article"); el.className = "card";
   el.innerHTML = `<div class="ban c ${g.ban}"><svg class="i"><use href="#${g.icone}"/></svg></div><div class="bd">
@@ -383,6 +378,7 @@ GUIDES.forEach(g => {
     </div></div>`;
   gl.appendChild(el);
 });
+COURS.filter(c => !c.lien).forEach(carteCours);
 gl.addEventListener("click", ev => {
   const a = ev.target.closest("[data-wa]"); if (!a) return;
   ev.preventDefault();
