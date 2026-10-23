@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="author" content="Prof. MEZNI Kamel - Lycée Liberté Jendouba">
+<title>Guide d'utilisation de RoboBlocs ESP32</title>
+<style>
+:root{--bg:#f8fafc;--fg:#1e293b;--card:#fff;--ac:#0a6fd0;--wa:#fff4e5;--wb:#ff8c1a}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f172a;--fg:#e2e8f0;--card:#1e293b;--ac:#60a5fa;--wa:#3b2a12;--wb:#ff8c1a}}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,Arial,sans-serif;line-height:1.6}
+main{max-width:780px;margin:auto;padding:24px 16px 48px}h1{color:var(--ac)}h2{margin-top:30px}
+.k{background:var(--card);border-radius:12px;padding:12px 18px;box-shadow:0 1px 6px #0002}.w{background:var(--wa);border:2px solid var(--wb);border-radius:12px;padding:10px 18px}
+a{color:var(--ac)}code{background:#64748b33;padding:1px 6px;border-radius:5px}
+</style></head><body><main>
+<p><a href="index.html">← Accueil</a> · <a href="roboblocs.html">▶ Ouvrir l'IDE</a></p>
+<h1>📖 Guide d'utilisation</h1>
+
+<h2>1. Préparer la carte (une seule fois)</h2>
+<div class="w"><ol>
+<li>Installer le pilote <b>CP210x</b> : <a href="https://www.silabs.com/developer-tools/usb-to-uart-bridge-vcp-drivers">silabs.com</a>.</li>
+<li>Installer <a href="https://thonny.org">Thonny</a>.</li>
+<li>Brancher l'ESP32 avec un câble USB qui transmet les données.</li>
+<li>Thonny : <i>Exécuter → Configurer l'interpréteur</i> → <b>MicroPython (ESP32)</b> → <i>Installer ou mettre à jour MicroPython</i>.</li>
+<li>Si l'installation reste sur « Connecting… », maintenir le bouton <b>BOOT</b> de la carte.</li>
+<li><b>Fermer Thonny</b> : un seul logiciel peut utiliser le port à la fois.</li></ol></div>
+
+<h2>2. Utiliser RoboBlocs</h2>
+<div class="k"><ol>
+<li>Ouvrir l'IDE avec <b>Chrome ou Edge</b>.</li>
+<li><b>🔌 Connecter la carte</b>, choisir le port USB (CP210x).</li>
+<li>Assembler les blocs ou charger un modèle avec <b>📚 Exemples</b>.</li>
+<li><b>▶ Envoyer et lancer</b> ; <b>■ Arrêter</b> pour stopper.</li>
+<li><b>📲 Mettre sur la carte</b> : le programme démarre tout seul à chaque mise sous tension.</li>
+<li><b>💾 Enregistrer le projet</b> / <b>📁 Ouvrir un projet</b> pour retrouver son travail (fichier <code>.json</code>).</li></ol></div>
+
+<h2>3. Exemple : radar de recul avec tableau de bord Wi-Fi</h2>
+<div class="k"><ul>
+<li>HC-SR04 : Trig → broche 23, Echo → broche 22 (<b>avec diviseur de tension</b>), VCC → 5V (VIN), GND → GND.</li>
+<li>LED : broche 21 via une résistance de 220 Ω. Buzzer actif : broche 19.</li>
+<li>Charger l'exemple dans <b>📚 Exemples</b>, puis <b>Envoyer et lancer</b>.</li>
+<li>Se connecter au Wi-Fi <code>ESP32-Radar</code> (mot de passe d'exemple <code>12345678</code>, à changer) et ouvrir <code>http://192.168.4.1</code>.</li>
+<li>Sous 10 cm : message d'alerte, ampoule rouge, LED et bips.</li></ul></div>
+
+<h2>4. Dépannage</h2>
+<div class="k"><ul>
+<li><b>La carte n'apparaît pas :</b> pilote CP210x manquant, câble « charge seulement », ou Thonny encore ouvert.</li>
+<li><b>Bouton Connecter sans effet :</b> utiliser Chrome ou Edge, pas Firefox ni Safari.</li>
+<li><b>Erreur à l'envoi :</b> vérifier que MicroPython est installé sur la carte (étape 1).</li>
+<li><b>Le Wi-Fi n'apparaît pas :</b> attendre quelques secondes après le lancement, puis relancer la carte (bouton EN).</li></ul></div>
+<p style="margin-top:30px;font-size:.9rem">© 2026 Prof. MEZNI Kamel · Lycée Liberté Jendouba · Club Internet des Objets et IA</p>
+</main></body></html>
