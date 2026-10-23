@@ -55,7 +55,7 @@ buzzer. Voir [docs/EXEMPLES.md](docs/EXEMPLES.md).
 
 ### 3. Lancer en local
 ```bash
-git clone https://github.com/VOTRE-COMPTE/roboblocs-esp32.git
+git clone https://github.com/kamelmezni/roboblocs-esp32.git
 cd roboblocs-esp32/docs
 python -m http.server 8000      # puis ouvrir http://localhost:8000/roboblocs.html
 ```
